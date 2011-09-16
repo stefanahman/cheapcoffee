@@ -26,13 +26,6 @@ public class Main
 		System.out.println("Seed: " + seed);
 		System.out.println("Replications: " + replications);
 		System.out.println("Queue: " + queue);
-		
-	 	Random rnd	= new Random(seed);
-	 	
-	 	for (int i = 0; i < 100; i++)
-	 	{
-	 		System.out.println(rnd.nextDouble());
-	 	}
 	 	
 	}
 
