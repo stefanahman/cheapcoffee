@@ -9,6 +9,7 @@ public class Main
 	{
 		System.out.println("**********************************");
 		System.out.println("*     Welcome to Cheap Coffe     *");
+		System.out.println("**********************************");	
 	}
 
 }
