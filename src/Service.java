@@ -1,8 +1,8 @@
 
-public class Service extends Entity
+public class Service
 {	
 	private double serviceTime;
-	private boolean working;
+	private boolean serverBusy;
 	
 	public double getServiceTime()
 	{
@@ -14,14 +14,19 @@ public class Service extends Entity
 		this.serviceTime = serviceTime;
 	}
 	
-	public boolean isWorking()
+	public boolean isBusy()
 	{
-		return working;
+		return serverBusy;
 	}
 	
-	public void setWorking(boolean working) 
+	public void setBusy() 
 	{
-		this.working = working;
+		this.serverBusy = true;
+	}
+	
+	public void setIdle() 
+	{
+		this.serverBusy = false;
 	}
 	
 }
