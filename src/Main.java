@@ -3,6 +3,8 @@ import java.util.Random;
 
 public class Main
 {
+	static double IAT = 0.2;
+	
 	static long seed;
 	static int replications;
 	static int queue;
@@ -16,10 +18,6 @@ public class Main
 	 	seed = (long)Integer.parseInt(args[0]);
 	 	replications = Integer.parseInt(args[1]);
 	 	queue = Integer.parseInt(args[2]);
-	 	
-	 	Random rnd	= new Random();
-	 	rnd.setSeed(seed);
-
 		
 		System.out.println("**********************************");
 		System.out.println("*     Welcome to Cheap Coffe     *");
@@ -28,6 +26,14 @@ public class Main
 		System.out.println("Seed: " + seed);
 		System.out.println("Replications: " + replications);
 		System.out.println("Queue: " + queue);
+		
+	 	Random rnd	= new Random(seed);
+	 	
+	 	for (int i = 0; i < 100; i++)
+	 	{
+	 		System.out.println(rnd.nextDouble());
+	 	}
+	 	
 	}
 
 }
