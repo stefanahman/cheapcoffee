@@ -1,7 +1,6 @@
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
-import java.util.Vector;
 
 public class CheapCoffee
 {
@@ -10,15 +9,19 @@ public class CheapCoffee
 	private double time;
 	private LinkedList<Event> fel = new LinkedList<Event>();
 	private Iterator<Event> felIt = fel.iterator();
+	private Arrival arrival;
+	private Departure departure;
+	private Service service = new Service(calculateServiceTime());
 	
 	Random rnd = new Random();
 	
 	public CheapCoffee(long seed) {
 		rnd.setSeed(seed);
+		run();
 	}
 	
 	private void run() {
-		Arrival arrival = new Arrival(calculateInterArrivalTime());
+		arrival = new Arrival(calculateInterArrivalTime());
 		Event event = new Event();
 		fel.add(arrival);
 		time = 0;
@@ -29,8 +32,27 @@ public class CheapCoffee
 		} while (felIt.hasNext());
 	}
 	
-	private void eventHandler(Event ev) {
-		
+	private void eventHandler(Event ev){
+		if(ev instanceof Arrival){
+			arrival = new Arrival(time + calculateInterArrivalTime());
+			fel.add(arrival);
+			if(!service.isBusy()){
+				service.setBusy();
+				departure = new Departure(time + service.getServiceTime());
+				fel.add(departure);
+			} else {
+				Main.queue.setCustomersInQueue(Main.queue.getCustomersInQueue() + 1);
+			}
+		} else if(ev instanceof Departure){
+			if(!Main.queue.isQueueFull()){
+				service.setIdle();
+			} else {
+				Main.queue.setCustomersInQueue(Main.queue.getCustomersInQueue() - 1);
+				departure.setTime(time+service.getServiceTime());
+				fel.add(departure);
+				time = time + service.getServiceTime();
+			}
+		}
 	}
 	
 	public double calculateInterArrivalTime() {
