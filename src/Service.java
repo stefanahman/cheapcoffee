@@ -1,5 +1,5 @@
 
-public class Service
+public class Service extends Entity
 {	
 	private double serviceTime;
 	private boolean working;

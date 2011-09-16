@@ -1,18 +1,18 @@
 
-public class Customer
+public class Customer extends Entity
 {
 
-	private int enterShop;
+	private int enterCafe;
 	private int queueTime;
 
-	public int getEnterShop()
+	public int getEnterCafe()
 	{
-		return enterShop;
+		return enterCafe;
 	}
 
-	public void setEnterShop(int enterShop)
+	public void setEnterCafe(int enterCafe)
 	{
-		this.enterShop = enterShop;
+		this.enterCafe = enterCafe;
 	}
 
 	public int getQueueTime()
