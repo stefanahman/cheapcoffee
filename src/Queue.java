@@ -1,8 +1,13 @@
 
 public class Queue
 {		
-	private int customersInQueue;
-	private int maxQueueSize;
+	
+	private int customersInQueue = 0;
+	private int maxQueueSize = 0;
+	
+	public Queue(int maxQueueSize) {
+		this.maxQueueSize = maxQueueSize;
+	}
 
 	/**
 	 * @return the customersInQueue

@@ -4,6 +4,12 @@ public class Service
 	private double serviceTime;
 	private boolean serverBusy;
 	
+	
+	
+	public Service(double serviceTime) {
+		this.serviceTime = serviceTime;
+	}
+
 	public double getServiceTime()
 	{
 		return serviceTime;
