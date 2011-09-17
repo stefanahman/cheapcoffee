@@ -24,9 +24,7 @@ public class CheapCoffee
 	}
 
 	private void run() {
-		System.out.println("Run");
 		arrival = new Arrival(calculateInterArrivalTime());
-		System.out.println("Time of first arrival: " + arrival.getTime());
 		Event event;
 		fel.add(arrival);
 		time = 0;
@@ -34,38 +32,48 @@ public class CheapCoffee
 			event = fel.getFirst();
 			fel.removeFirst();
 			time = event.getTime();
-			System.out.println("OK " + time);
 			eventHandler(event);
-			break;
+			if(time > breakTime)
+				break;
 		}while (felIt.hasNext());
 	}
 
 	private void eventHandler(Event ev){
-		System.out.println("Handle events!!!");
+
+		System.out.println("------------------- Events Start ----------------------");
+		System.out.println(service.isBusy() ? "Server is busy" : "Server is idle");
 		if(ev instanceof Arrival){
 			System.out.println("Customer arrives at time: " + time);
 			arrival = new Arrival(time + calculateInterArrivalTime());
 			fel.add(arrival);
 			if(!service.isBusy()){
 				service.setBusy();
-				System.out.println("Departure");
-				departure = new Departure(time + service.getServiceTime());
+				System.out.println("Calculate and add Departure");
+				departure = new Departure(time + calculateServiceTime());
+				System.out.println("Customer will depart at:" + departure.getTime());
 				fel.add(departure);
 			} else {
-				System.out.println("Busy");
+				System.out.println("Place customer in queue");
+				//TODO: Add queue funtionality and rejection.
 				Main.queue.setCustomersInQueue(Main.queue.getCustomersInQueue() + 1);
 			}
+
+
 		} else if(ev instanceof Departure){
+			System.out.println("Customer departs at time: " + time);
 			if(!Main.queue.isQueueFull()){
 				service.setIdle();
 			} else {
+				System.out.println("Remove customer from queue");
+				//TODO: Add queue funtionality.
 				Main.queue.setCustomersInQueue(Main.queue.getCustomersInQueue() - 1);
-				departure.setTime(time+service.getServiceTime());
+				departure.setTime(time+calculateServiceTime());
+				System.out.println("Plan queueing customers departure at: " + departure.getTime());
 				fel.add(departure);
-				time = time + service.getServiceTime();
 			}
 		}
-		System.out.println("Events done");
+		System.out.println("------------------- Events done -----------------------");
+		System.out.println("");
 	}
 
 	public double calculateInterArrivalTime() {
