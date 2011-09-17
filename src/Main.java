@@ -8,7 +8,6 @@ public class Main
 	static int maxQueueSize;
 	static int simulationLength;
 	static CheapCoffee[] simulation;
-	static Queue queue;
 	static private Random rnd = new Random();
 	
 	/**
@@ -34,8 +33,6 @@ public class Main
 		
 		rnd.setSeed(seed);
 		
-		queue = new Queue(maxQueueSize);
-	 	
 		for (int i = 0; i < replications; i++) {
 			System.out.println("loop: " + i );
 			System.out.println("size: " + simulation.length );

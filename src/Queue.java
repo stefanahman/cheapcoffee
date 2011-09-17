@@ -67,16 +67,23 @@ public class Queue
 			return(this.customersInQueue >= this.maxQueueSize);
 	}
 	
+	public boolean isQueueEmpty(){
+		return(customersInQueue == 0);
+	}
+	
 	public String toString(){
 		String out = "";
 		int emptySpaces = Main.maxQueueSize - customersInQueue;
-		System.out.println("Custumers in queue: " + customersInQueue);
+		System.out.println("Custumers in queue: " + queue.size());
 		System.out.println("Empty spaces: " + emptySpaces);
 		for (int i = 0; i < emptySpaces; i++) {
 			out += "-";
 		}
+		int temp = customersInQueue;
 		for (int i = 0; i < customersInQueue; i++) {
-			out += "o";
+			
+			out += " " + queue.get(temp).getCustomerId();
+			temp--;
 		}
 		out += "|";
 		

@@ -8,6 +8,9 @@ public class CheapCoffee
 	final double SERVICERATE = 0.25;
 	private double time;
 	private double breakTime;
+	private Queue queue = new Queue(Main.maxQueueSize);
+	private Customer customer;
+	private int numberOfCustomers = 0;
 	private LinkedList<Event> fel = new LinkedList<Event>();
 	private Iterator<Event> felIt = fel.listIterator();
 	private Arrival arrival;
@@ -41,39 +44,54 @@ public class CheapCoffee
 	private void eventHandler(Event ev){
 
 		System.out.println("------------------- Events Start ----------------------");
-		System.out.println(service.isBusy() ? "Server is busy" : "Server is idle");
-		if(ev instanceof Arrival){
-			System.out.println("Customer arrives at time: " + time);
-			arrival = new Arrival(time + calculateInterArrivalTime());
+		if(ev instanceof Arrival){ // Om det kommer någon så, skapa kund, beräkna när nästa kommer
+			numberOfCustomers += 1;
+			customer = new Customer(numberOfCustomers,time);
+			
+			System.out.println("Customer " + customer.getCustomerId() + " arrives at time: " + customer.getArrivalTime());
+			
+			arrival = new Arrival(time + calculateInterArrivalTime()); // Calculate next customer
+			
 			fel.add(arrival);
-			if(!service.isBusy()){
+			
+			
+			if(!service.isBusy()){ // ..kan kunden gå till kassan direkt
+				System.out.println("Place customer in service");
 				service.setBusy();
-				System.out.println("Calculate and add Departure");
-				departure = new Departure(time + calculateServiceTime());
-				System.out.println("Customer will depart at: " + departure.getTime());
+				
+				double serviceTime = calculateServiceTime();
+				customer.setServiceTime(serviceTime);
+				departure = new Departure(time + serviceTime);
+				customer.setDepartureTime(departure.getTime());
+				System.out.println("Customer " + customer.getCustomerId() + " will depart at: " + departure.getTime());
 				fel.add(departure);
-			} else {
+			} else { // annars måste han/hon ställa sig i kö
 				System.out.println("Place customer in queue");
-				//TODO: Add queue funtionality and rejection.
-				Main.queue.setCustomersInQueue(Main.queue.getCustomersInQueue() + 1);
+				queue.addLast(customer);
 			}
-
-
-		} else if(ev instanceof Departure){
-			System.out.println("Customer departs at time: " + time);
-			if(!Main.queue.isQueueFull()){
+		} else if(ev instanceof Departure){ // När någon kund lämnar så..
+			
+			customer = queue.takeFirst();
+			System.out.println("Customer departs at time: " + customer.getDepartureTime());
+			if(queue.isQueueEmpty()){ // vänta till det kommer någon ny kund
 				service.setIdle();
-			} else {
-				System.out.println("Remove customer from queue");
-				//TODO: Add queue funtionality.
-				Main.queue.setCustomersInQueue(Main.queue.getCustomersInQueue() - 1);
-				System.out.println(Main.queue.toString());
-				departure.setTime(time+calculateServiceTime());
+				System.out.println("Set idle");
+			} else { // ta nästa kund och beräkna när han/hon är klar
+				System.out.println("Take next customer in queue");
+				
+				//TODO: Add queue funtionality
+				
+				double serviceTime = calculateServiceTime();
+				customer.setServiceTime(serviceTime);
+				departure = new Departure(time + serviceTime);
+				customer.setDepartureTime(departure.getTime());
 				System.out.println("Plan queueing customers departure at: " + departure.getTime());
 				fel.add(departure);
+				
 			}
+			
 		}
-		System.out.println(Main.queue.toString());
+		System.out.println(queue.toString());
 		System.out.println("------------------- Events done -----------------------");
 		System.out.println("");
 	}
