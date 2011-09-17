@@ -8,7 +8,7 @@ public class CheapCoffee
 	final double SERVICERATE = 0.25;
 	private double time;
 	private LinkedList<Event> fel = new LinkedList<Event>();
-	private Iterator<Event> felIt = fel.iterator();
+	private Iterator<Event> felIt = fel.listIterator();
 	private Arrival arrival;
 	private Departure departure;
 	private Service service = new Service();
@@ -30,11 +30,12 @@ public class CheapCoffee
 		time = 0;
 		while (felIt.hasNext()){
 			System.out.println("Collect event from FEL!");
-			event = felIt.next();
+			event = fel.getFirst();
+			fel.removeFirst();
 			System.out.println("OK");
 			System.out.println("Get time from event");
 			time = event.getTime();
-			System.out.println("OK" + time);
+			System.out.println("OK " + time);
 			eventHandler(event);
 		}
 		System.out.println("done");
@@ -48,9 +49,11 @@ public class CheapCoffee
 			fel.add(arrival);
 			if(!service.isBusy()){
 				service.setBusy();
+				System.out.println("Departure");
 				departure = new Departure(time + service.getServiceTime());
 				fel.add(departure);
 			} else {
+				System.out.println("Busy");
 				Main.queue.setCustomersInQueue(Main.queue.getCustomersInQueue() + 1);
 			}
 		} else if(ev instanceof Departure){
