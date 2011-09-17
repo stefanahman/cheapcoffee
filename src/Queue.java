@@ -1,9 +1,12 @@
+import java.util.LinkedList;
+
 
 public class Queue
-{		
+{
 	
 	private int customersInQueue = 0;
 	private int maxQueueSize = 0;
+	private LinkedList<Customer> queue = new LinkedList<Customer>();
 	
 	public Queue(int maxQueueSize) {
 		this.maxQueueSize = maxQueueSize;
@@ -14,6 +17,22 @@ public class Queue
 	 */
 	public int getCustomersInQueue() {
 		return customersInQueue;
+	}
+	
+	/**
+	 * @param Place customer c in line
+	 */
+	public void addLast(Customer c){
+		queue.addLast(c);
+	}
+	
+	/**
+	 * @return the first Customer
+	 */
+	public Customer takeFirst(){
+		Customer c = queue.getFirst();
+		queue.removeFirst();
+		return c;
 	}
 	
 	/**
@@ -46,5 +65,20 @@ public class Queue
 			return false;
 		else
 			return(this.customersInQueue >= this.maxQueueSize);
+	}
+	
+	public String toString(){
+		
+		int emptySpaces = Main.maxQueueSize - customersInQueue;
+		
+		for (int i = 0; i < emptySpaces; i++) {
+			System.out.print("- ");
+		}
+		for (int i = 0; i < customersInQueue; i++) {
+			System.out.print("o ");
+		}
+		System.out.print(" | ");
+		return null;
+		
 	}
 }
