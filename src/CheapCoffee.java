@@ -56,9 +56,9 @@ public class CheapCoffee
 			
 			
 			if(!service.isBusy()){ // ..kan kunden gå till kassan direkt
-				System.out.println("Place customer in service");
+				System.out.println("Place Customer " + customer.getCustomerId() + " in service");
 				service.setBusy();
-				
+				service.setCurrentCustomer(customer);
 				double serviceTime = calculateServiceTime();
 				customer.setServiceTime(serviceTime);
 				departure = new Departure(time + serviceTime);
@@ -68,24 +68,25 @@ public class CheapCoffee
 			} else { // annars måste han/hon ställa sig i kö
 				System.out.println("Place customer in queue");
 				queue.addLast(customer);
+				System.out.println("Customer "+ service.getCurrentCustomer().getCustomerId() +" is now beeing served.");
 			}
 		} else if(ev instanceof Departure){ // När någon kund lämnar så..
+			System.out.println("Customer " + service.getCurrentCustomer().getCustomerId() + " departs at time: " + service.getCurrentCustomer().getDepartureTime());
 			
-			customer = queue.takeFirst();
-			System.out.println("Customer departs at time: " + customer.getDepartureTime());
 			if(queue.isQueueEmpty()){ // vänta till det kommer någon ny kund
 				service.setIdle();
 				System.out.println("Set idle");
 			} else { // ta nästa kund och beräkna när han/hon är klar
+				customer = queue.takeFirst();
 				System.out.println("Take next customer in queue");
-				
+				System.out.println("Customer "+ service.getCurrentCustomer().getCustomerId() +" is now beeing served.");
 				//TODO: Add queue funtionality
-				
+				service.setCurrentCustomer(customer);
 				double serviceTime = calculateServiceTime();
 				customer.setServiceTime(serviceTime);
 				departure = new Departure(time + serviceTime);
 				customer.setDepartureTime(departure.getTime());
-				System.out.println("Plan queueing customers departure at: " + departure.getTime());
+				System.out.println("Customer " + customer.getCustomerId() + " will depart at: " + departure.getTime());
 				fel.add(departure);
 				
 			}

@@ -3,6 +3,7 @@ public class Service
 {	
 	private double serviceTime;
 	private boolean serverBusy;
+	private Customer currentCustomer = null;
 	
 	public Service() {
 	}
@@ -29,7 +30,16 @@ public class Service
 	
 	public void setIdle() 
 	{
+		this.currentCustomer = null;
 		this.serverBusy = false;
 	}
 	
+	public Customer getCurrentCustomer() {
+		return currentCustomer;
+	}
+
+	public void setCurrentCustomer(Customer currentCustomer) {
+		this.currentCustomer = currentCustomer;
+	}
+
 }
