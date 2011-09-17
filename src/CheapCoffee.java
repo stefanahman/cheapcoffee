@@ -11,29 +11,39 @@ public class CheapCoffee
 	private Iterator<Event> felIt = fel.iterator();
 	private Arrival arrival;
 	private Departure departure;
-	private Service service = new Service(calculateServiceTime());
+	private Service service = new Service();
 	
 	Random rnd = new Random();
 	
 	public CheapCoffee(long seed) {
+		System.out.println("Cheap Coffee is alive!");
 		rnd.setSeed(seed);
 		run();
 	}
 	
 	private void run() {
+		System.out.println("Run");
 		arrival = new Arrival(calculateInterArrivalTime());
-		Event event = new Event();
+		System.out.println("Time of first arrival: " + arrival.getTime());
+		Event event;
 		fel.add(arrival);
 		time = 0;
-		do {
+		while (felIt.hasNext()){
+			System.out.println("Collect event from FEL!");
 			event = felIt.next();
+			System.out.println("OK");
+			System.out.println("Get time from event");
 			time = event.getTime();
+			System.out.println("OK" + time);
 			eventHandler(event);
-		} while (felIt.hasNext());
+		}
+		System.out.println("done");
 	}
 	
 	private void eventHandler(Event ev){
+		System.out.println("Handle events!!!");
 		if(ev instanceof Arrival){
+			System.out.println("Customer arrives at time: " + time);
 			arrival = new Arrival(time + calculateInterArrivalTime());
 			fel.add(arrival);
 			if(!service.isBusy()){
@@ -56,11 +66,13 @@ public class CheapCoffee
 	}
 	
 	public double calculateInterArrivalTime() {
-		double iat = -Math.log(rnd.nextDouble())/ARRIVALRATE;
+		double rndSeed = rnd.nextDouble();
+		double iat = -Math.log(rndSeed)/ARRIVALRATE;
 		return iat;
 	}
 	public double calculateServiceTime() {
-		double ist = -Math.log(rnd.nextDouble())/SERVICERATE;
+		double rndSeed = rnd.nextDouble();
+		double ist = -Math.log(rndSeed)/SERVICERATE;
 		return ist;
 	}
 
