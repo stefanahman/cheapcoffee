@@ -73,10 +73,10 @@ public class Queue
 	public String toString(){
 		String out = "";
 		int emptySpaces = Main.maxQueueSize - queue.size();
-		System.out.println("Custumers in queue: " + queue.size());
-		System.out.println("Empty spaces: " + emptySpaces);
+		System.out.println("# Custumers in queue: " + queue.size());
+		System.out.println("# Empty spaces: " + emptySpaces);
 		for (int i = 0; i < emptySpaces; i++) {
-			out += "-";
+			out += "_";
 		}
 		int temp = queue.size();
 		for (int i = 0; i < queue.size(); i++) {
