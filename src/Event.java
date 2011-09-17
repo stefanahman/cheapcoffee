@@ -17,4 +17,13 @@ public class Event {
 	public void setTime(double time) {
 		this.time = time;
 	}
+
+	public int compareTo(Event evt) {
+		if(this.getTime() > evt.getTime())
+			return 1;
+		if(this.getTime() == evt.getTime())
+			return 0;
+		else
+			return -1;
+	}
 }
