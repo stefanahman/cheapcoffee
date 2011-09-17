@@ -1,4 +1,5 @@
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class CheapCoffee
@@ -66,6 +67,7 @@ public class CheapCoffee
 				customer.setDepartureTime(departure.getTime());
 				System.out.println("# Customer " + customer.getCustomerId() + " will depart at: " + departure.getTime());
 				fel.insertSorted(departure);
+				System.out.println("Customers in FEL: " + fel.size());
 			} else { // annars måste han/hon ställa sig i kö
 				System.out.println("# Customer "+ service.getCurrentCustomer().getCustomerId() +" is now beeing served.");
 				queue.addLast(customer);
