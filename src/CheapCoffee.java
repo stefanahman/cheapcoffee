@@ -66,9 +66,9 @@ public class CheapCoffee
 				System.out.println("Customer " + customer.getCustomerId() + " will depart at: " + departure.getTime());
 				fel.add(departure);
 			} else { // annars måste han/hon ställa sig i kö
-				System.out.println("Place customer in queue");
-				queue.addLast(customer);
 				System.out.println("Customer "+ service.getCurrentCustomer().getCustomerId() +" is now beeing served.");
+				queue.addLast(customer);
+				System.out.println("Place customer in queue");
 			}
 		} else if(ev instanceof Departure){ // När någon kund lämnar så..
 			System.out.println("Customer " + service.getCurrentCustomer().getCustomerId() + " departs at time: " + service.getCurrentCustomer().getDepartureTime());
@@ -78,6 +78,7 @@ public class CheapCoffee
 				System.out.println("Set idle");
 			} else { // ta nästa kund och beräkna när han/hon är klar
 				customer = queue.takeFirst();
+				service.setCurrentCustomer(customer);
 				System.out.println("Take next customer in queue");
 				System.out.println("Customer "+ service.getCurrentCustomer().getCustomerId() +" is now beeing served.");
 				//TODO: Add queue funtionality

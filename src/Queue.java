@@ -30,8 +30,7 @@ public class Queue
 	 * @return the first Customer
 	 */
 	public Customer takeFirst(){
-		Customer c = queue.getFirst();
-		queue.removeFirst();
+		Customer c = queue.removeFirst();
 		return c;
 	}
 	
@@ -68,7 +67,7 @@ public class Queue
 	}
 	
 	public boolean isQueueEmpty(){
-		return(customersInQueue == 0);
+		return(queue.size() == 0);
 	}
 	
 	public String toString(){
@@ -79,10 +78,9 @@ public class Queue
 		for (int i = 0; i < emptySpaces; i++) {
 			out += "-";
 		}
-		int temp = customersInQueue;
-		for (int i = 0; i < customersInQueue; i++) {
-			
-			out += " " + queue.get(temp).getCustomerId();
+		int temp = queue.size();
+		for (int i = 0; i < queue.size(); i++) {
+			out += " " + queue.get(temp-1).getCustomerId();
 			temp--;
 		}
 		out += "|";
