@@ -50,7 +50,7 @@ public class CheapCoffee
 				service.setBusy();
 				System.out.println("Calculate and add Departure");
 				departure = new Departure(time + calculateServiceTime());
-				System.out.println("Customer will depart at:" + departure.getTime());
+				System.out.println("Customer will depart at: " + departure.getTime());
 				fel.add(departure);
 			} else {
 				System.out.println("Place customer in queue");
@@ -67,11 +67,13 @@ public class CheapCoffee
 				System.out.println("Remove customer from queue");
 				//TODO: Add queue funtionality.
 				Main.queue.setCustomersInQueue(Main.queue.getCustomersInQueue() - 1);
+				System.out.println(Main.queue.toString());
 				departure.setTime(time+calculateServiceTime());
 				System.out.println("Plan queueing customers departure at: " + departure.getTime());
 				fel.add(departure);
 			}
 		}
+		System.out.println(Main.queue.toString());
 		System.out.println("------------------- Events done -----------------------");
 		System.out.println("");
 	}

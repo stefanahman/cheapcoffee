@@ -68,17 +68,19 @@ public class Queue
 	}
 	
 	public String toString(){
-		
+		String out = "";
 		int emptySpaces = Main.maxQueueSize - customersInQueue;
-		
+		System.out.println("Custumers in queue: " + customersInQueue);
+		System.out.println("Empty spaces: " + emptySpaces);
 		for (int i = 0; i < emptySpaces; i++) {
-			System.out.print("- ");
+			out += "-";
 		}
 		for (int i = 0; i < customersInQueue; i++) {
-			System.out.print("o ");
+			out += "o";
 		}
-		System.out.print(" | ");
-		return null;
+		out += "|";
 		
+		
+		return out;
 	}
 }
