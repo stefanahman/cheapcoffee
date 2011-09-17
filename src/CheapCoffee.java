@@ -1,5 +1,4 @@
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Random;
 
 public class CheapCoffee
@@ -11,7 +10,7 @@ public class CheapCoffee
 	private Queue queue = new Queue(Main.maxQueueSize);
 	private Customer customer;
 	private int numberOfCustomers = 0;
-	private LinkedList<Event> fel = new LinkedList<Event>();
+	private FutureEventList fel = new FutureEventList();
 	private Iterator<Event> felIt = fel.listIterator();
 	private Arrival arrival;
 	private Departure departure;
@@ -29,7 +28,7 @@ public class CheapCoffee
 	private void run() {
 		arrival = new Arrival(calculateInterArrivalTime());
 		Event event;
-		fel.add(arrival);
+		fel.insertSorted(arrival);
 		time = 0;
 		do{
 			event = fel.getFirst();
@@ -54,7 +53,7 @@ public class CheapCoffee
 			
 			arrival = new Arrival(time + calculateInterArrivalTime()); // Calculate next customer
 			
-			fel.add(arrival);
+			fel.insertSorted(arrival);
 			
 			
 			if(!service.isBusy()){ // ..kan kunden gå till kassan direkt
@@ -66,7 +65,7 @@ public class CheapCoffee
 				departure = new Departure(time + serviceTime);
 				customer.setDepartureTime(departure.getTime());
 				System.out.println("# Customer " + customer.getCustomerId() + " will depart at: " + departure.getTime());
-				fel.add(departure);
+				fel.insertSorted(departure);
 			} else { // annars måste han/hon ställa sig i kö
 				System.out.println("# Customer "+ service.getCurrentCustomer().getCustomerId() +" is now beeing served.");
 				queue.addLast(customer);
@@ -92,7 +91,7 @@ public class CheapCoffee
 				departure = new Departure(time + serviceTime);
 				customer.setDepartureTime(departure.getTime());
 				System.out.println("# Customer " + customer.getCustomerId() + " will depart at: " + departure.getTime());
-				fel.add(departure);
+				fel.insertSorted(departure);
 				
 			}
 			
