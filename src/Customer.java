@@ -1,17 +1,17 @@
 
 public class Customer extends Entity
 {
-	private long timeEnterCafe;
+	private long arrivalTime;
 	private int queueTime;
 
 	public Customer(long time) {
 		super();
-		this.timeEnterCafe = time;
+		this.arrivalTime = time;
 	}
 
 	public long getTimeEnterCafe()
 	{
-		return timeEnterCafe;
+		return arrivalTime;
 	}
 
 	public int getQueueTime()
