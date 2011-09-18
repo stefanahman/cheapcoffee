@@ -6,16 +6,16 @@ public class CheapCoffee
 	final double ARRIVALRATE = 0.2;
 	final double SERVICERATE = 0.25;
 	
-	private double time;
-	private double breakTime;
-	private double serviceTime;
+	private double time = 0;
+	private double breakTime = 0;
+	private double serviceTime = 0;
 	
 	private int rejectedCustomers = 0;
 	private int totalCustomers = 0;
 	private int totalCustomersInQueueSinceStart = 0;
 	private double totalQueueTimeSinceStart = 0;
 	private double percentRejected = 0;
-	private double averageQueueTime;
+	private double averageQueueTime = 0;
 	
 	private FutureEventList fel = new FutureEventList();
 	private Iterator<Event> felIt = fel.listIterator();
@@ -139,8 +139,8 @@ public class CheapCoffee
 			}
 			
 		}
-		percentRejected = (double) rejectedCustomers/totalCustomers;
-		averageQueueTime =  (double)totalQueueTimeSinceStart/totalCustomersInQueueSinceStart;
+		percentRejected = (double) (rejectedCustomers/totalCustomers);
+		averageQueueTime =  (double) (totalQueueTimeSinceStart/totalCustomersInQueueSinceStart);
 		
 //		System.out.println("  Rejected customers: " + rejectedCustomers);
 //		System.out.println("  Total customers: " + totalCustomers);

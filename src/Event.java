@@ -5,10 +5,6 @@ public class Event {
 	public Event(double time) {
 		this.time = time;
 	}
-	
-	public Event() {
-		
-	}
 
 	public double getTime() {
 		return time;
