@@ -5,23 +5,29 @@ public class CheapCoffee
 {
 	final double ARRIVALRATE = 0.2;
 	final double SERVICERATE = 0.25;
+	
 	private double time;
 	private double breakTime;
+	private double serviceTime;
+	
 	private int rejectedCustomers = 0;
 	private int totalCustomers = 0;
-	private double totalQueueTime = 0;
+	private double totalQueueTimeSinceStart = 0;
 	private double percentRejected = 0;
-	private int customersInQueue = 0;
-	private Queue queue = new Queue(Main.maxQueueSize);
-	private Customer customer;
+	private int totalCustomersInQueueSinceStart = 0;
+	
 	private FutureEventList fel = new FutureEventList();
 	private Iterator<Event> felIt = fel.listIterator();
+	
+	private Queue queue = new Queue(Main.maxQueueSize);
+	private Customer customer;
+	
 	private Arrival arrival;
 	private Departure departure;
 	private Service service = new Service();
 	private Event currentEvent;
 
-	Random rnd = new Random();
+	private Random rnd = new Random();
 
 	public CheapCoffee(long seed, int simulationLength) {
 		System.out.println("");
@@ -33,88 +39,112 @@ public class CheapCoffee
 	private void run() {
 		time = 0;
 		arrival = new Arrival(calculateInterArrivalTime()); // räkna ut när första kommer
-		fel.insertSorted(arrival); // sätt in eventet i future event list
+		fel.insertSorted(arrival); // sätt in första eventet i future event list
 		do{
 			currentEvent = fel.getFirst();
 			time = currentEvent.getTime();
 			
-			eventHandler(currentEvent);
+			eventHandler(currentEvent); // behandla nästkommande event
 
-			fel.removeFirst();
-			if((time > breakTime) && (fel.size() <= 0))
-				break;
-		}while (felIt.hasNext());
+			fel.removeFirst(); // ta fram nästa
+			if((time > breakTime) && (fel.size() <= 0)) // kolla om vi ska bryta
+				break; 
+		}while (felIt.hasNext()); // kör till tom
 	}
 
 	private void eventHandler(Event ev){
-		if(ev instanceof Arrival){ // Om det kommer någon så, skapa kund, beräkna när nästa kommer
+		// DET KOMMER EN NY KUND
+		if(ev instanceof Arrival){
 			System.out.println("##################### Arrival ###################");
 			System.out.println("");
-			totalCustomers += 1;
-			customer = new Customer(totalCustomers,time);
 			
+			// SKAPA KUNDEN
+			customer = new Customer(totalCustomers,time);
+			totalCustomers += 1;
 			System.out.println("  Customer " + customer.getCustomerId() + " arrives at time: " + customer.getArrivalTime());
 			
-			arrival = new Arrival(time + calculateInterArrivalTime()); // Calculate next customer
-			if(breakTime >= arrival.getTime())
-				fel.insertSorted(arrival);
-			
-			
-			if(!service.isBusy()){ // ..kan kunden gå till kassan direkt
+			// OM DET ÄR LEDIG i KASSAN
+			if(!service.isBusy()){
 				System.out.println("  Place Customer " + customer.getCustomerId() + " in service");
-				service.setBusy();
-				service.setCurrentCustomer(customer);
-				double serviceTime = calculateServiceTime();
-				customer.setServiceTime(serviceTime);
-				departure = new Departure(time + serviceTime);
-				customer.setDepartureTime(departure.getTime());
+				
+				service.setCurrentCustomer(customer); // Kunden befinner sig i kassan
+				service.setBusy(); // Kassan blir upptagen
+				
+				serviceTime = calculateServiceTime(); // Beräkna hur lång tid kunden kommer vara i kassan
+				customer.setServiceTime(serviceTime); // Kunden får en servicetid
+				departure = new Departure(time + serviceTime); // Schemalägg när kunden är klar
+				customer.setDepartureTime(departure.getTime()); // Kunden får en tid då den är färdig
+				
 				System.out.println("  Customer " + customer.getCustomerId() + " will depart at: " + departure.getTime());
-				fel.insertSorted(departure);
-				System.out.println("  Customers in FEL: " + fel.size());
-			} else { // annars måste han/hon ställa sig i kö
+				
+				fel.insertSorted(departure); // Lägg in event för när kunden ska gå
+			
+			// OM DET STÅR FOLK I KÖN
+			} else {
 				System.out.println("  Customer "+ service.getCurrentCustomer().getCustomerId() +" is now beeing served.");
+				
+				// OM DET FINNS PLATS I KÖN
 				if(!queue.isQueueFull()){
-					queue.addLast(customer);
-					customer.setStartQueueTime(time);
+					queue.addLast(customer); // Ställ kunden sist i kön
+					customer.setStartQueueTime(time); // Börja räkna på hur länge kunden kommer stå i kön
 					System.out.println("  Place customer in queue");
+				
+				// OM KÖN ÄR FULL
 				} else {
-					rejectedCustomers += 1;
+					rejectedCustomers += 1; // Räkna ivägskickade kunder
 				}
 			}
-		} else if(ev instanceof Departure){ // När någon kund lämnar så..
+			
+			// BERÄKNA NÄR NÄSTA KUND KOMMER
+			arrival = new Arrival(time + calculateInterArrivalTime());
+			if(breakTime >= arrival.getTime()) // Om uträknad tid överskrider stängningstid, neka kunden inträde
+				fel.insertSorted(arrival);
+		
+		// KUNDEN ÄR KLAR OCH LÄMNAR
+		} else if(ev instanceof Departure){
 			System.out.println("#################### Departure ##################");
 			System.out.println("");
+			
 			System.out.println("  Customer " + service.getCurrentCustomer().getCustomerId() + " departs at time: " + service.getCurrentCustomer().getDepartureTime());
-			if(queue.isQueueEmpty()){ // vänta till det kommer någon ny kund
-				service.setIdle();
+			
+			// OM KÖN ÄR TOM
+			if(queue.isQueueEmpty()){
+				service.setIdle(); // Sätt kassan ledig
 				System.out.println("  Set idle");
-			} else { // ta nästa kund och beräkna när han/hon är klar
-				customer = queue.takeFirst();
-				customer.setEndQueueTime(time);
-				service.setCurrentCustomer(customer);
+			
+			// OM DET FINNS FOLK I KÖN
+			} else {
+				customer = queue.takeFirst(); // Tag första kunden i kön
+				customer.setEndQueueTime(time); // Avsluta kundens kötid
+				totalCustomersInQueueSinceStart += 1; // Räkna totalet antalet personer som stått i kö
 				System.out.println("  Take next customer in queue");
-				customersInQueue += 1;
-				totalQueueTime += customer.getQueueTime();
 				
 				System.out.println("  Customer " + customer.getCustomerId() + " queuing time: " + customer.getQueueTime());
+				totalQueueTimeSinceStart += customer.getQueueTime(); // Lägg till kundens kötid till totalen
+				
+				service.setCurrentCustomer(customer); // Uppdatera kunden i kassan
 				System.out.println("  Customer "+ service.getCurrentCustomer().getCustomerId() +" is now beeing served.");
-				service.setCurrentCustomer(customer);
-				double serviceTime = calculateServiceTime();
-				customer.setServiceTime(serviceTime);
-				departure = new Departure(time + serviceTime);
-				customer.setDepartureTime(departure.getTime());
+				
+				serviceTime = calculateServiceTime(); // Beräkna hur länge kunden befinner sig i kassan
+				customer.setServiceTime(serviceTime); // Kunden får en servicetid
+				
+				departure = new Departure(time + serviceTime); // Schemalägg när kunden är klar
+				customer.setDepartureTime(departure.getTime()); // Kunden får en tid då den är färdig
+				
 				System.out.println("  Customer " + customer.getCustomerId() + " will depart at: " + departure.getTime());
+				
 				fel.insertSorted(departure);
 				
 			}
 			
 		}
+		percentRejected = (double) rejectedCustomers/totalCustomers;
+		
 		System.out.println("  Rejected customers: " + rejectedCustomers);
 		System.out.println("  Total customers: " + totalCustomers);
-		System.out.println("  Total customers in queue: " + customersInQueue);
-		System.out.println("  Total queue time: " + totalQueueTime);
-		System.out.println("  Average queue time: " + totalQueueTime/customersInQueue);
-		percentRejected = (double) rejectedCustomers/totalCustomers;
+		System.out.println("  Total customers in queue: " + totalCustomersInQueueSinceStart);
+		System.out.println("  Total queue time: " + totalQueueTimeSinceStart);
+		System.out.println("  Average queue time: " + totalQueueTimeSinceStart/totalCustomersInQueueSinceStart);
 		System.out.println("  Percent rejected: " + String.format("%.5g", 100*percentRejected) + "%");
 		System.out.println("  " + queue.toString(service.getCurrentCustomer()));
 		System.out.println("");
