@@ -137,8 +137,8 @@ public class CheapCoffee
 			}
 			
 		}
-		percentRejected = (double) (rejectedCustomers/totalCustomers);
-		averageQueueTime =  (double) (totalQueueTimeSinceStart/totalCustomers);
+		percentRejected = (double) rejectedCustomers/totalCustomers;
+		averageQueueTime =  (double) totalQueueTimeSinceStart/totalCustomers;
 		
 //		System.out.println("  Rejected customers: " + rejectedCustomers);
 //		System.out.println("  Total customers: " + totalCustomers);
