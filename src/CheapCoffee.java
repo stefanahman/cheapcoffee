@@ -12,7 +12,6 @@ public class CheapCoffee
 	
 	private int rejectedCustomers = 0;
 	private int totalCustomers = 0;
-	private int totalCustomersInQueueSinceStart = 0;
 	private double totalQueueTimeSinceStart = 0;
 	private double percentRejected = 0;
 	private double averageQueueTime = 0;
@@ -117,7 +116,6 @@ public class CheapCoffee
 			} else {
 				customer = queue.takeFirst(); // Tag första kunden i kön
 				customer.setEndQueueTime(time); // Avsluta kundens kötid
-				totalCustomersInQueueSinceStart += 1; // Räkna totalet antalet personer som stått i kö
 //				System.out.println("  Take next customer in queue");
 				
 //				System.out.println("  Customer " + customer.getCustomerId() + " queuing time: " + customer.getQueueTime());
@@ -140,7 +138,7 @@ public class CheapCoffee
 			
 		}
 		percentRejected = (double) (rejectedCustomers/totalCustomers);
-		averageQueueTime =  (double) (totalQueueTimeSinceStart/totalCustomersInQueueSinceStart);
+		averageQueueTime =  (double) (totalQueueTimeSinceStart/totalCustomers);
 		
 //		System.out.println("  Rejected customers: " + rejectedCustomers);
 //		System.out.println("  Total customers: " + totalCustomers);
