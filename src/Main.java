@@ -25,35 +25,39 @@ public class Main
 		
 		System.out.println("#################################################");
 		System.out.println("#						#");
-		System.out.println("# Welcome to Cheap Coffee			#");
+		System.out.println("# Welcome to Cheap Coffee!			#");
 		System.out.println("#						#");
 		System.out.println("#################################################");
 		
-		System.out.println("# Seed:			" + seed + "	#");
-		System.out.println("# Replications:		" + replications + "	#");
-		System.out.println("# Queue:		" + maxQueueSize + "	#");
-		System.out.println("# Simulation length:	" + simulationLength + "	#");
+		System.out.println("# Seed:					" + seed + "	#");
+		System.out.println("# Replications:				" + replications + "	#");
+		System.out.println("# Queue:				" + maxQueueSize + "	#");
+		System.out.println("# Simulation length:			" + simulationLength + "	#");
 		
 		simulation = new CheapCoffee[replications];
 		
 		rnd.setSeed(seed);
 		
 		for (int i = 0; i < replications; i++) {
-			System.out.println("#################################################");
-			System.out.println("#						#");
-			System.out.println("# Replication " + (i + 1) + "					#");
-			System.out.println("#						#");
-			System.out.println("#################################################");
+//			System.out.println("#################################################");
+//			System.out.println("#						#");
+//			System.out.println("# Replication " + (i + 1) + "					#");
+//			System.out.println("#						#");
+//			System.out.println("#################################################");
 			long rndSeed = rnd.nextLong();
 			simulation[i] = new CheapCoffee(rndSeed, simulationLength);
 			sumAverageQueueTime += simulation[i].getAverageQueueTime();
 			sumPercentRejected += simulation[i].getPercentRejected();
 			sumTotalCustomers += simulation[i].getTotalCustomers();
 		}
-		
-		System.out.println("  Total average average queue time: " + (double) sumAverageQueueTime/replications);
-		System.out.println("  Total average percent rejected: " + (double) sumPercentRejected/replications);
-		System.out.println("  Total average customers: " + (double) sumTotalCustomers/replications);
-		
+		System.out.println("#################################################");
+		System.out.println("#						#");
+		System.out.println("# Summary					#");
+		System.out.println("#						#");
+		System.out.println("#################################################");
+		System.out.println("# Total average average queue time:	" + String.format("%.5g",(double) sumAverageQueueTime/replications) + "	#");
+		System.out.println("# Total average percent rejected:	" +  String.format("%.5g",(double) 100*sumPercentRejected/replications) + "%	#");
+		System.out.println("# Total average customers: 		" + (double) sumTotalCustomers/replications + "	#");
+		System.out.println("#################################################");
 	}
 }
