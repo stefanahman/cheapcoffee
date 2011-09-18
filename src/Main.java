@@ -9,6 +9,9 @@ public class Main
 	static int simulationLength;
 	static CheapCoffee[] simulation;
 	static private Random rnd = new Random();
+	static private int sumTotalCustomers = 0;
+	static private double sumAverageQueueTime = 0;
+	static private double sumPercentRejected = 0;
 	
 	/**
 	 * @param args
@@ -43,7 +46,14 @@ public class Main
 			System.out.println("#################################################");
 			long rndSeed = rnd.nextLong();
 			simulation[i] = new CheapCoffee(rndSeed, simulationLength);
+			sumAverageQueueTime += simulation[i].getAverageQueueTime();
+			sumPercentRejected += simulation[i].getPercentRejected();
+			sumTotalCustomers += simulation[i].getTotalCustomers();
 		}
+		
+		System.out.println("  Total average average queue time: " + (double) sumAverageQueueTime/replications);
+		System.out.println("  Total average percent rejected: " + (double) sumPercentRejected/replications);
+		System.out.println("  Total average customers: " + (double) sumTotalCustomers/replications);
+		
 	}
-
 }

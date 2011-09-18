@@ -12,9 +12,10 @@ public class CheapCoffee
 	
 	private int rejectedCustomers = 0;
 	private int totalCustomers = 0;
+	private int totalCustomersInQueueSinceStart = 0;
 	private double totalQueueTimeSinceStart = 0;
 	private double percentRejected = 0;
-	private int totalCustomersInQueueSinceStart = 0;
+	private double averageQueueTime;
 	
 	private FutureEventList fel = new FutureEventList();
 	private Iterator<Event> felIt = fel.listIterator();
@@ -139,12 +140,13 @@ public class CheapCoffee
 			
 		}
 		percentRejected = (double) rejectedCustomers/totalCustomers;
+		averageQueueTime =  (double)totalQueueTimeSinceStart/totalCustomersInQueueSinceStart;
 		
 		System.out.println("  Rejected customers: " + rejectedCustomers);
 		System.out.println("  Total customers: " + totalCustomers);
 		System.out.println("  Total customers in queue: " + totalCustomersInQueueSinceStart);
 		System.out.println("  Total queue time: " + totalQueueTimeSinceStart);
-		System.out.println("  Average queue time: " + totalQueueTimeSinceStart/totalCustomersInQueueSinceStart);
+		System.out.println("  Average queue time: " + averageQueueTime);
 		System.out.println("  Percent rejected: " + String.format("%.5g", 100*percentRejected) + "%");
 		System.out.println("  " + queue.toString(service.getCurrentCustomer()));
 		System.out.println("");
@@ -155,10 +157,22 @@ public class CheapCoffee
 		double iat = -Math.log(rndSeed)/ARRIVALRATE;
 		return iat;
 	}
+	
 	public double calculateServiceTime() {
 		double rndSeed = rnd.nextDouble();
 		double ist = -Math.log(rndSeed)/SERVICERATE;
 		return ist;
 	}
+	
+	public int getTotalCustomers() {
+		return totalCustomers;
+	}
 
+	public double getPercentRejected() {
+		return percentRejected;
+	}
+
+	public double getAverageQueueTime() {
+		return averageQueueTime;
+	}
 }
