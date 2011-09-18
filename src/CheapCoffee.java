@@ -1,5 +1,4 @@
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Random;
 
 public class CheapCoffee
@@ -8,14 +7,19 @@ public class CheapCoffee
 	final double SERVICERATE = 0.25;
 	private double time;
 	private double breakTime;
+	private int rejectedCustomers = 0;
+	private int totalCustomers = 0;
+	private double totalQueueTime = 0;
+	private double percentRejected = 0;
+	private int customersInQueue = 0;
 	private Queue queue = new Queue(Main.maxQueueSize);
 	private Customer customer;
-	private int numberOfCustomers = 0;
 	private FutureEventList fel = new FutureEventList();
 	private Iterator<Event> felIt = fel.listIterator();
 	private Arrival arrival;
 	private Departure departure;
 	private Service service = new Service();
+	private Event currentEvent;
 
 	Random rnd = new Random();
 
@@ -27,34 +31,33 @@ public class CheapCoffee
 	}
 
 	private void run() {
-		arrival = new Arrival(calculateInterArrivalTime());
-		Event event;
-		fel.insertSorted(arrival);
 		time = 0;
+		arrival = new Arrival(calculateInterArrivalTime()); // räkna ut när första kommer
+		fel.insertSorted(arrival); // sätt in eventet i future event list
 		do{
-			event = fel.getFirst();
+			currentEvent = fel.getFirst();
+			time = currentEvent.getTime();
+			
+			eventHandler(currentEvent);
+
 			fel.removeFirst();
-			time = event.getTime();
-			eventHandler(event);
-			if(time > breakTime)
+			if((time > breakTime) && (fel.size() <= 0))
 				break;
 		}while (felIt.hasNext());
 	}
 
 	private void eventHandler(Event ev){
-
-		
 		if(ev instanceof Arrival){ // Om det kommer någon så, skapa kund, beräkna när nästa kommer
 			System.out.println("##################### Arrival ###################");
 			System.out.println("");
-			numberOfCustomers += 1;
-			customer = new Customer(numberOfCustomers,time);
+			totalCustomers += 1;
+			customer = new Customer(totalCustomers,time);
 			
 			System.out.println("  Customer " + customer.getCustomerId() + " arrives at time: " + customer.getArrivalTime());
 			
 			arrival = new Arrival(time + calculateInterArrivalTime()); // Calculate next customer
-			
-			fel.insertSorted(arrival);
+			if(breakTime >= arrival.getTime())
+				fel.insertSorted(arrival);
 			
 			
 			if(!service.isBusy()){ // ..kan kunden gå till kassan direkt
@@ -70,23 +73,31 @@ public class CheapCoffee
 				System.out.println("  Customers in FEL: " + fel.size());
 			} else { // annars måste han/hon ställa sig i kö
 				System.out.println("  Customer "+ service.getCurrentCustomer().getCustomerId() +" is now beeing served.");
-				queue.addLast(customer);
-				System.out.println("  Place customer in queue");
+				if(!queue.isQueueFull()){
+					queue.addLast(customer);
+					customer.setStartQueueTime(time);
+					System.out.println("  Place customer in queue");
+				} else {
+					rejectedCustomers += 1;
+				}
 			}
 		} else if(ev instanceof Departure){ // När någon kund lämnar så..
 			System.out.println("#################### Departure ##################");
 			System.out.println("");
 			System.out.println("  Customer " + service.getCurrentCustomer().getCustomerId() + " departs at time: " + service.getCurrentCustomer().getDepartureTime());
-			
 			if(queue.isQueueEmpty()){ // vänta till det kommer någon ny kund
 				service.setIdle();
 				System.out.println("  Set idle");
 			} else { // ta nästa kund och beräkna när han/hon är klar
 				customer = queue.takeFirst();
+				customer.setEndQueueTime(time);
 				service.setCurrentCustomer(customer);
 				System.out.println("  Take next customer in queue");
+				customersInQueue += 1;
+				totalQueueTime += customer.getQueueTime();
+				
+				System.out.println("  Customer " + customer.getCustomerId() + " queuing time: " + customer.getQueueTime());
 				System.out.println("  Customer "+ service.getCurrentCustomer().getCustomerId() +" is now beeing served.");
-				//TODO: Add queue funtionality
 				service.setCurrentCustomer(customer);
 				double serviceTime = calculateServiceTime();
 				customer.setServiceTime(serviceTime);
@@ -98,7 +109,14 @@ public class CheapCoffee
 			}
 			
 		}
-		System.out.println("  " + queue.toString());
+		System.out.println("  Rejected customers: " + rejectedCustomers);
+		System.out.println("  Total customers: " + totalCustomers);
+		System.out.println("  Total customers in queue: " + customersInQueue);
+		System.out.println("  Total queue time: " + totalQueueTime);
+		System.out.println("  Average queue time: " + totalQueueTime/customersInQueue);
+		percentRejected = (double) rejectedCustomers/totalCustomers;
+		System.out.println("  Percent rejected: " + String.format("%.5g", 100*percentRejected) + "%");
+		System.out.println("  " + queue.toString(service.getCurrentCustomer()));
 		System.out.println("");
 	}
 

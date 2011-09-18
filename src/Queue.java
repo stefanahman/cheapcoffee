@@ -3,20 +3,11 @@ import java.util.LinkedList;
 
 public class Queue
 {
-	
-	private int customersInQueue = 0;
 	private int maxQueueSize = 0;
 	private LinkedList<Customer> queue = new LinkedList<Customer>();
 	
 	public Queue(int maxQueueSize) {
 		this.maxQueueSize = maxQueueSize;
-	}
-
-	/**
-	 * @return the customersInQueue
-	 */
-	public int getCustomersInQueue() {
-		return customersInQueue;
 	}
 	
 	/**
@@ -42,13 +33,6 @@ public class Queue
 	}
 	
 	/**
-	 * @param customersInQueue the customersInQueue to set
-	 */
-	public void setCustomersInQueue(int customersInQueue) {
-		this.customersInQueue = customersInQueue;
-	}
-	
-	/**
 	 * @param maxQueueSize the maxQueueSize to set
 	 */
 	public void setMaxQueueSize(int maxQueueSize) {
@@ -56,35 +40,38 @@ public class Queue
 	}
 	
 	public boolean isQueueInf(){
-		return(this.maxQueueSize == -1);
+		return(maxQueueSize == -1);
 	}
 	
 	public boolean isQueueFull(){
 		if(isQueueInf())
 			return false;
 		else
-			return(this.customersInQueue >= this.maxQueueSize);
+			return(queue.size() >= maxQueueSize);
 	}
 	
 	public boolean isQueueEmpty(){
 		return(queue.size() == 0);
 	}
 	
-	public String toString(){
+	public String toString(Customer c){
 		String out = "";
 		int emptySpaces = Main.maxQueueSize - queue.size();
 		System.out.println("  Custumers in queue: " + queue.size());
 		System.out.println("  Empty spaces: " + emptySpaces);
 		for (int i = 0; i < emptySpaces; i++) {
-			out += "_";
+			out += "- ";
 		}
 		int temp = queue.size();
 		for (int i = 0; i < queue.size(); i++) {
-			out += " " + queue.get(temp-1).getCustomerId();
+			out += queue.get(temp-1).getCustomerId() + " ";
 			temp--;
 		}
-		out += "|";
-		
+		out += "| ";
+		if(c != null)
+			out += c.getCustomerId();
+		else
+			out += "Idle";
 		
 		return out;
 	}

@@ -3,7 +3,8 @@ public class Customer
 {
 	private int id;
 	private double arrivalTime;
-	private double queueTime;
+	private double startQueueTime;
+	private double endQueueTime;
 	private double serviceTime;
 	private double departureTime;
 
@@ -41,14 +42,23 @@ public class Customer
 		return id;
 	}
 
-	public double getQueueTime()
-	{
-		return queueTime;
+	public double getQueueTime() {
+		return (this.endQueueTime-this.startQueueTime);
 	}
 
-	public void setQueueTime(int queueTime)
-	{
-		this.queueTime = queueTime;
+	public double getStartQueueTime() {
+		return startQueueTime;
 	}
 
+	public void setStartQueueTime(double startQueueTime) {
+		this.startQueueTime = startQueueTime;
+	}
+
+	public double getEndQueueTime() {
+		return endQueueTime;
+	}
+
+	public void setEndQueueTime(double endQueueTime) {
+		this.endQueueTime = endQueueTime;
+	}
 }

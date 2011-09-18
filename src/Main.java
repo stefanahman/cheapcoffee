@@ -28,7 +28,7 @@ public class Main
 		
 		System.out.println("# Seed:			" + seed + "	#");
 		System.out.println("# Replications:		" + replications + "	#");
-		System.out.println("# Queue:			" + maxQueueSize + "	#");
+		System.out.println("# Queue:		" + maxQueueSize + "	#");
 		System.out.println("# Simulation length:	" + simulationLength + "	#");
 		
 		simulation = new CheapCoffee[replications];
