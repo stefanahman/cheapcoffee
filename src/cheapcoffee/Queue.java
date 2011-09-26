@@ -1,4 +1,4 @@
-package cheapcoffe;
+package cheapcoffee;
 import java.util.LinkedList;
 
 

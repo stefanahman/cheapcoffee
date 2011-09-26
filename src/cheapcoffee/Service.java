@@ -1,4 +1,4 @@
-package cheapcoffe;
+package cheapcoffee;
 
 public class Service
 {	

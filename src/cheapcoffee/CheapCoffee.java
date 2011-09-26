@@ -1,4 +1,4 @@
-package cheapcoffe;
+package cheapcoffee;
 import java.util.Iterator;
 import java.util.Random;
 
