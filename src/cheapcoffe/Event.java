@@ -1,3 +1,4 @@
+package cheapcoffe;
 
 public class Event {
 	double time;
