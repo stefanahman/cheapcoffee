@@ -798,3 +798,11 @@ arrival_data = [004.728
 1892.012
 1893.016
 1899.060];
+
+arrival_data_diff = time_diff(arrival_data);
+
+arrival_data_diff_size = length(arrival_data_diff);
+subplot(2,2,1);
+
+hist(arrival_data_diff,sqrt(arrival_data_diff_size));
+title('Arrival Time')
