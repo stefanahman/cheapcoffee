@@ -804,3 +804,5 @@ subplot(2,2,3);
 
 hist(position_data,sqrt(position_data_size));
 title('Position');
+
+position_b = expectation_value_uniform(position_data);

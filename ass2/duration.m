@@ -804,3 +804,5 @@ subplot(2,2,2);
 
 hist(duration_data,sqrt(duration_data_size));
 title('Duration');
+
+duration_lambda = expectation_value_exponential(duration_data);

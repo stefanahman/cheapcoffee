@@ -806,3 +806,5 @@ subplot(2,2,1);
 
 hist(arrival_data_diff,sqrt(arrival_data_diff_size));
 title('Arrival Time')
+
+arrival_lambda = expectation_value_exponential(arrival_data_diff);

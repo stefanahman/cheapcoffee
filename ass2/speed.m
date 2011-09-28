@@ -804,3 +804,8 @@ subplot(2,2,4);
 
 hist(speed_data,sqrt(speed_data_size));
 title('Speed');
+
+speed_results = expectation_value_normal(speed_data);
+
+speed_my = speed_results(1);
+speed_sigma_squared = speed_results(2);
