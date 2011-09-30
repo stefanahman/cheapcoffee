@@ -54,6 +54,3 @@ test_list = [0.661
     hist(test_list,sqrt(test_size));    
     test_lambda = expectation_value_exponential(test_list);
     
-    [h,p,stats] = chi2gof(test_list,'cdf',@(z)expcdf(z,mean(test_list),std(test_list)),'nbins',,'alpha',0.05,'nparams',1)
-    
-    
